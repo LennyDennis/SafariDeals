@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Safiri</string>
+    <string name="deal_title">Deal Title</string>
+    <string name="price_hint">Price (number only)</string>
+    <string name="description_hint">Description</string>
+    <string name="save_menu">Save</string>
+    <dimen name="edit_margin">16dp</dimen>
+    <dimen name="margin_top">24dp</dimen>
+</resources>

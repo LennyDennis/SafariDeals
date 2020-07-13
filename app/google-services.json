@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "849233237412",
+    "firebase_url": "https://safiriapp-47c41.firebaseio.com",
+    "project_id": "safiriapp-47c41",
+    "storage_bucket": "safiriapp-47c41.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849233237412:android:14404a4becfcd00a91dd31",
+        "android_client_info": {
+          "package_name": "com.lennydennis.safiri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849233237412-6fgh918l2r28cju9r48996mh1bfmi700.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lennydennis.safiri",
+            "certificate_hash": "90d849f3d70a5ace67a67b39962c4e3239bdb84b"
+          }
+        },
+        {
+          "client_id": "849233237412-eltm8gg1r8u1k69fl3ru872a516bcrd6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpDM-LG1hY1ahYrZefD9TNh2j91a-z0ZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849233237412-eltm8gg1r8u1k69fl3ru872a516bcrd6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
