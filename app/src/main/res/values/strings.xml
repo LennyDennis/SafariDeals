@@ -4,6 +4,7 @@
     <string name="price_hint">Price (number only)</string>
     <string name="description_hint">Description</string>
     <string name="save_menu">Save</string>
+    <string name="delete_deal">Delete Deal</string>
     <dimen name="edit_margin">16dp</dimen>
     <dimen name="margin_top">24dp</dimen>
     <dimen name="list_margin">8dp</dimen>

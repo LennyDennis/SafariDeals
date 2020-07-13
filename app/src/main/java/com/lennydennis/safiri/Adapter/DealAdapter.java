@@ -1,6 +1,7 @@
 package com.lennydennis.safiri.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.lennydennis.safiri.DealActivity;
 import com.lennydennis.safiri.R;
 import com.lennydennis.safiri.TravelDeal;
 import com.lennydennis.safiri.Util.FirebaseUtil;
@@ -92,7 +94,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
         return mTravelDeals.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView dealTitle;
         TextView dealDescription;
@@ -103,6 +105,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
             dealTitle = itemView.findViewById(R.id.travel_title);
             dealDescription = itemView.findViewById(R.id.travel_description);
             dealPrice = itemView.findViewById(R.id.travel_price);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(TravelDeal travelDeal){
@@ -111,6 +114,14 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
             dealPrice.setText(travelDeal.getPrice());
         }
 
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            TravelDeal travelDealSelected = mTravelDeals.get(position);
+            Intent intent = new Intent(itemView.getContext(), DealActivity.class);
+            intent.putExtra("Deal", travelDealSelected);
+            itemView.getContext().startActivity(intent);
+        }
     }
 
 }
