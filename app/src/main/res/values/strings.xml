@@ -6,4 +6,5 @@
     <string name="save_menu">Save</string>
     <dimen name="edit_margin">16dp</dimen>
     <dimen name="margin_top">24dp</dimen>
+    <dimen name="list_margin">8dp</dimen>
 </resources>
