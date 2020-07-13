@@ -12,6 +12,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.lennydennis.safiri.Util.FirebaseUtil;
 
 import java.util.ArrayList;
 
@@ -33,8 +34,9 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference().child("traveldeals");
+        FirebaseUtil.openFirebaseReference("traveldeals");
+        mFirebaseDatabase = FirebaseUtil.sFirebaseDatabase;
+        mDatabaseReference = FirebaseUtil.sDatabaseReference;
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {

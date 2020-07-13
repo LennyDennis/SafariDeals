@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.lennydennis.safiri.Util.FirebaseUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,8 +34,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mDatabase = FirebaseDatabase.getInstance();
-        mMyRef = mDatabase.getReference().child("traveldeals");
+        FirebaseUtil.openFirebaseReference("traveldeals");
+        mDatabase = FirebaseUtil.sFirebaseDatabase;
+        mMyRef = FirebaseUtil.sDatabaseReference;
 
 
     }
