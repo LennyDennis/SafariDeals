@@ -36,7 +36,7 @@ public class DealActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        FirebaseUtil.openFirebaseReference("traveldeals",this);
+//        FirebaseUtil.openFirebaseReference("traveldeals",this);
         mDatabase = FirebaseUtil.sFirebaseDatabase;
         mMyRef = FirebaseUtil.sDatabaseReference;
 
@@ -107,6 +107,22 @@ public class DealActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.save_menu, menu);
+
+        if(FirebaseUtil.isAdmin){
+            menu.findItem(R.id.delete_deal).setVisible(true);
+            menu.findItem(R.id.save_menu).setVisible(true);
+            enableEditText(true);
+        }else{
+            menu.findItem(R.id.delete_deal).setVisible(false);
+            menu.findItem(R.id.save_menu).setVisible(false);
+            enableEditText(false);
+        }
         return true;
+    }
+
+    private void enableEditText(boolean isEnabled){
+        safariTitle.setEnabled(isEnabled);
+        safariDescription.setEnabled(isEnabled);
+        safariPrice.setEnabled(isEnabled);
     }
 }
