@@ -24,20 +24,17 @@ import com.lennydennis.safiri.Util.FirebaseUtil;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
 
-    private static final String TAG = "Deal Adapter" ;
     ArrayList<TravelDeal> mTravelDeals;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
+    private static final String TAG = "Deal Adapter" ;
 
 
     public DealAdapter() {
-        FirebaseUtil.openFirebaseReference("traveldeals");
+//        FirebaseUtil.openFirebaseReference("traveldeals");
         mFirebaseDatabase = FirebaseUtil.sFirebaseDatabase;
         mDatabaseReference = FirebaseUtil.sDatabaseReference;
         mTravelDeals = FirebaseUtil.sTravelDeals;
@@ -45,7 +42,6 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 TravelDeal travelDeal = snapshot.getValue(TravelDeal.class);
-                Log.d(TAG, "onChildAdded:  "+travelDeal.getTitle());
                 travelDeal.setId(snapshot.getKey());
                 mTravelDeals.add(travelDeal);
                 notifyItemInserted(mTravelDeals.size()-1);

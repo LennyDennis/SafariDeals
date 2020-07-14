@@ -36,7 +36,7 @@ public class DealActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        FirebaseUtil.openFirebaseReference("traveldeals");
+        FirebaseUtil.openFirebaseReference("traveldeals",this);
         mDatabase = FirebaseUtil.sFirebaseDatabase;
         mMyRef = FirebaseUtil.sDatabaseReference;
 
