@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -130,6 +131,21 @@ public class DealActivity extends AppCompatActivity {
             return;
         }
         mMyRef.child(travelDeal.getId()).removeValue();
+        if(travelDeal.getImageName() != null && !travelDeal.getImageName().isEmpty()){
+            String imageUrl = travelDeal.getImageName();
+            StorageReference storageReference = FirebaseUtil.mStorageRef.child(imageUrl);
+            storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("Delete Image", "Delete successfully: ");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("Delete Image", "onFailure: " +e.getMessage());
+                }
+            });
+        }
         }
 
     private void backToList(){
@@ -146,10 +162,13 @@ public class DealActivity extends AppCompatActivity {
             menu.findItem(R.id.delete_deal).setVisible(true);
             menu.findItem(R.id.save_menu).setVisible(true);
             enableEditText(true);
+            findViewById(R.id.btn_image).setEnabled(true);
         }else{
             menu.findItem(R.id.delete_deal).setVisible(false);
             menu.findItem(R.id.save_menu).setVisible(false);
             enableEditText(false);
+            findViewById(R.id.btn_image).setEnabled(false);
+
         }
         return true;
     }
@@ -172,7 +191,7 @@ public class DealActivity extends AppCompatActivity {
 
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
 
                             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                                 @Override
@@ -190,7 +209,9 @@ public class DealActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Uri> task) {
                                     if (task.isSuccessful()) {
                                         Uri downloadUri = task.getResult();
+                                        String pictureName = taskSnapshot.getStorage().getName();
                                         travelDeal.setImageUrl(downloadUri.toString());
+                                        travelDeal.setImageName(pictureName);
                                         showImage(downloadUri.toString());
                                     }
                                 }
