@@ -14,6 +14,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.lennydennis.safiri.ListActivity;
 import com.lennydennis.safiri.TravelDeal;
 
@@ -28,6 +30,7 @@ public class FirebaseUtil {
     public static DatabaseReference sDatabaseReference;
     public static FirebaseUtil sFirebaseUtil;
     public static FirebaseAuth sFirebaseAuth;
+    public static StorageReference mStorageRef;
     public static FirebaseAuth.AuthStateListener sAuthStateListener;
     public static ArrayList<TravelDeal> sTravelDeals;
     private static ListActivity caller;
@@ -59,6 +62,7 @@ public class FirebaseUtil {
         }
         sTravelDeals = new ArrayList<TravelDeal>();
         sDatabaseReference = sFirebaseDatabase.getReference().child(reference);
+        connectStorage();
     }
 
     private static void checkAdmin(String userId) {
@@ -115,5 +119,9 @@ public class FirebaseUtil {
                         .setAvailableProviders(providers)
                         .build(),
                 RC_SIGN_IN);
+    }
+
+    public static void connectStorage(){
+        mStorageRef = FirebaseStorage.getInstance().getReference().child("deal_pictures");
     }
 }

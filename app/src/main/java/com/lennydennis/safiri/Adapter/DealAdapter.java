@@ -2,10 +2,12 @@ package com.lennydennis.safiri.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import com.lennydennis.safiri.DealActivity;
 import com.lennydennis.safiri.R;
 import com.lennydennis.safiri.TravelDeal;
 import com.lennydennis.safiri.Util.FirebaseUtil;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -31,6 +34,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
     private DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
     private static final String TAG = "Deal Adapter" ;
+    private ImageView imageDeal;
 
 
     public DealAdapter() {
@@ -101,6 +105,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
             dealTitle = itemView.findViewById(R.id.travel_title);
             dealDescription = itemView.findViewById(R.id.travel_description);
             dealPrice = itemView.findViewById(R.id.travel_price);
+            imageDeal = itemView.findViewById(R.id.travel_image);
             itemView.setOnClickListener(this);
         }
 
@@ -108,6 +113,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
             dealTitle.setText(travelDeal.getTitle());
             dealDescription.setText(travelDeal.getDescription());
             dealPrice.setText(travelDeal.getPrice());
+            showImage(travelDeal.getImageUrl());
         }
 
         @Override
@@ -117,6 +123,17 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.ViewHolder> {
             Intent intent = new Intent(itemView.getContext(), DealActivity.class);
             intent.putExtra("Deal", travelDealSelected);
             itemView.getContext().startActivity(intent);
+        }
+
+        private void showImage(String url){
+            if(url != null && !url.isEmpty()){
+                int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+                Picasso.get()
+                        .load(url)
+                        .resize(200,200)
+                        .centerCrop()
+                        .into(imageDeal);
+            }
         }
     }
 

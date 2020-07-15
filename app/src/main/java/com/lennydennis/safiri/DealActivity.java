@@ -1,19 +1,36 @@
 package com.lennydennis.safiri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.lennydennis.safiri.Util.FirebaseUtil;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,25 +39,31 @@ public class DealActivity extends AppCompatActivity {
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mMyRef;
+    private static final int PICTURE_RESULT=42;
     @BindView(R.id.safiri_title)
     EditText safariTitle;
     @BindView(R.id.safiri_description)
     EditText safariDescription;
     @BindView(R.id.safiri_price)
     EditText safariPrice;
+    @BindView(R.id.btn_image)
+    Button imageButton;
+    @BindView(R.id.image)
+    ImageView mImageView;
     TravelDeal travelDeal;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_deal);
         ButterKnife.bind(this);
 
 //        FirebaseUtil.openFirebaseReference("traveldeals",this);
         mDatabase = FirebaseUtil.sFirebaseDatabase;
         mMyRef = FirebaseUtil.sDatabaseReference;
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         TravelDeal travelDeal = (TravelDeal) intent.getSerializableExtra("Deal");
         if(travelDeal == null){
             this.travelDeal = new TravelDeal();
@@ -49,7 +72,19 @@ public class DealActivity extends AppCompatActivity {
             safariTitle.setText(travelDeal.getTitle());
             safariDescription.setText(travelDeal.getDescription());
             safariPrice.setText(travelDeal.getPrice());
+            showImage(travelDeal.getImageUrl());
         }
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY,true);
+                startActivityForResult(Intent.createChooser(intent,"Insert Picture"),PICTURE_RESULT);
+
+            }
+        });
 
     }
 
@@ -102,7 +137,6 @@ public class DealActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -124,5 +158,65 @@ public class DealActivity extends AppCompatActivity {
         safariTitle.setEnabled(isEnabled);
         safariDescription.setEnabled(isEnabled);
         safariPrice.setEnabled(isEnabled);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICTURE_RESULT && resultCode == RESULT_OK){
+
+            assert data != null;
+            Uri imageUri = data.getData();
+            final StorageReference riversRef = FirebaseUtil.mStorageRef.child(Objects.requireNonNull(imageUri.getLastPathSegment()));
+            final UploadTask uploadTask = riversRef.putFile(imageUri);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()) {
+                                        throw task.getException();
+
+                                    }
+                                    // Continue with the task to get the download URL
+                                    return riversRef.getDownloadUrl();
+
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri downloadUri = task.getResult();
+                                        travelDeal.setImageUrl(downloadUri.toString());
+                                        showImage(downloadUri.toString());
+                                    }
+                                }
+                            });
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            // ...
+                        }
+                    });
+
+        }
+    }
+
+    private void showImage(String url){
+        if(url != null && !url.isEmpty()){
+            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            Picasso.get()
+                    .load(url)
+                    .resize(width,width*2/3)
+                    .centerCrop()
+                    .into(mImageView);
+        }
     }
 }
